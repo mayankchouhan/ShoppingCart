@@ -4,7 +4,7 @@
 		module="shoppingcart$sources"
 		revision="0.1"
 		status="integration"
-		publication="20190113104953"
+		publication="20190113194410"
 	/>
 	<configurations>
 		<conf name="compile" visibility="public" description=""/>
