@@ -32,11 +32,34 @@ object ShoppingCart extends LazyLogging{
   def totalAmountForItem(item: ShoppingCart) : Int = {
 
     val itemPrice:List[(Item, Int)] = List((Apple, 60),(Orange, 25))
+
     val pricePerUnit = itemPrice.find(_._1 == item.product).get._2
 
-    logger.info(s"totalAmountForItem : Total for ${item.quantity} ${item.product} is ${item.quantity * pricePerUnit}")
+    val afterDiscountUnit :Int = checkSpecialOffers(item)
 
-    item.quantity * pricePerUnit
+    logger.info(s"totalAmountForItem : Total for ${item.quantity} ${item.product} is ${afterDiscountUnit * pricePerUnit}")
+
+    pricePerUnit * afterDiscountUnit
+  }
+
+  /**
+    * This function checks if the item has special offer discounts. If yes, it returns afterDiscountUnit
+    * value to be multiplied to the pricePerUnit to compute the total after discount.
+    * @param item - ShoppingCart object, to check if we have it in the specialOfferList
+    * @return afterDiscountUnit - offer adjusted value to be multiplied with pricePerUnit to get price of
+    *         items after discount.
+    */
+  def checkSpecialOffers(item :ShoppingCart) : Int = {
+
+    val specialOfferList:List[(Item, (BigInt, BigInt))] = List((Apple, (2, 1)), (Orange, (3, 2)))
+
+    val (get :BigInt, buy :BigInt) = if (specialOfferList.find(_._1 == item.product).isDefined){
+      specialOfferList.find(_._1 == item.product).get._2
+       } else {(1,1)}
+
+    val (q :BigInt, r :BigInt) = BigInt(item.quantity) /% get
+
+    ((q * buy) + r).toInt
   }
 
   /**
